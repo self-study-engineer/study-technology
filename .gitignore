@@ -1,1 +1,3 @@
 *.pdf
+CLAUDE.md
+.claude/settings.json
