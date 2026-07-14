@@ -1,0 +1,13 @@
+@startuml
+title 第1正規化のテーブル設計(非正規化)
+entity "社員" as employee {
+    会社コード
+    社員ID
+    --
+    会社名
+    社員名
+    年齢
+    部署コード
+    部署名
+}
+@enduml

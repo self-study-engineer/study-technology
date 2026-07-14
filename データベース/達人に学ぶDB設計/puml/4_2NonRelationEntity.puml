@@ -1,0 +1,17 @@
+@startuml
+title "学生エンティティと講義エンティティ(関連実体なし)"
+
+entity "学生" as student #faa {
+    学生コード
+    --
+    学生名
+}
+
+entity "講義" as lecture #faa {
+    講義コード
+    --
+    講義名
+}
+
+student }|.|{ lecture
+@enduml

@@ -1,0 +1,27 @@
+@startuml
+title 第3正規化のテーブル設計(正規化)
+
+entity "会社" as company {
+    会社コード
+    --
+    会社名
+}
+
+entity "社員" as employee {
+    会社コード
+    社員ID
+    --
+    社員名
+    年齢
+    部署コード
+}
+
+entity "部署" as department {
+    部署コード
+    --
+    部署名
+}
+
+company ||.|{ employee
+employee }|.|| department
+@enduml

@@ -1,0 +1,30 @@
+@startuml
+
+entity "会社" as company #faa {
+    会社コード [PK]
+    --
+    会社名
+}
+note left 
+・上の項目(会社コード)は主キー属性
+・下の項目(会社名)は非キー属性
+end note
+
+entity "社員" as employee #aaf {
+    社員コード(FK)
+    社員ID
+    --
+    社員名
+    年齢
+    部署コード(FK)
+}
+
+entity "部署" as department #faa {
+    部署コード [PK]
+    --
+    部署名
+}
+
+company ||.o{ employee
+employee }|.|| department
+@enduml

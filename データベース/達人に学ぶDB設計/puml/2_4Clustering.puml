@@ -1,0 +1,34 @@
+@startuml
+left to right direction
+
+rectangle "クラスタリング" as cluster
+rectangle "アクティブ-スタンバイ方式" as as_pattern
+rectangle "ホットスタンバイ" as hot_standby
+note right
+コスト高
+end note
+rectangle "コールドスタンバイ" as cold_standby
+note right
+コスト安
+end note
+rectangle "アクティブ-アクティブ方式" as aa_pattern
+rectangle "シェアード\nエブリシング" as shared_everything
+note right
+サーバ間で
+リソースを
+共有する
+end note
+rectangle "シェアード\nナッシング" as shared_nothing
+note right
+サーバ間で
+リソースを
+共有しない
+end note
+
+cluster -- as_pattern
+cluster -- aa_pattern
+as_pattern -- hot_standby
+as_pattern -- cold_standby
+aa_pattern -- shared_everything
+aa_pattern -- shared_nothing
+@enduml

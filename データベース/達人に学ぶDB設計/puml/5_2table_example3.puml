@@ -1,0 +1,19 @@
+@startuml
+title 受注(1)と受注明細(多)
+
+entity "受注" as order {
+    受注ID
+    --
+    受注日
+    注文者名義
+}
+
+entity "受注明細" as order_detail {
+    受注ID
+    受注明細連番
+    --
+    商品名
+}
+
+order ||.|{ order_detail
+@enduml

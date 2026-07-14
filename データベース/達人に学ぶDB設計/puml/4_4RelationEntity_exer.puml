@@ -1,0 +1,72 @@
+@startuml
+
+rectangle 1消費者と商品の関連実体 {
+    entity "消費者" as customer {
+        ユーザID
+        --
+        ユーザ名
+    }
+
+    entity "商品" as product {
+        商品コード
+        --
+        商品名
+    }
+
+    entity "注文" as order {
+        ユーザID
+        商品コード
+        --
+    }
+
+    customer ||..|{ order
+    order }|..|| product
+}
+
+rectangle 2学生と部活の関連実体 {
+    entity "学生" as student {
+        学生ID
+        --
+        氏名
+    }
+
+    entity "部活" as club {
+        部活コード
+        --
+        部活名
+    }
+
+    entity "所属" as affiliation {
+        学生ID
+        部活コード
+        --
+    }
+
+    student ||..|{ affiliation
+    affiliation }|..|| club
+}
+
+rectangle 3著者と書籍の関連実体 {
+    entity "著者" as writer {
+        著者ID
+        --
+        著者名
+    }
+
+    entity "書籍" as book {
+        書籍コード
+        --
+        書籍名
+    }
+
+    entity "著述" as writing {
+        著者ID
+        書籍コード
+        --
+    }
+
+    writer }|..|{ writing
+    writing }|..|{ book
+}
+
+@enduml

@@ -1,0 +1,42 @@
+@startuml
+title "ER図"
+
+entity "支社" as office {
+    支社コード
+    --
+    支社名
+}
+
+entity "支店" as branch {
+    支社コード
+    支店コード
+    --
+    支店名
+}
+
+entity "支店商品" as branch_product {
+    支社コード
+    支店コード
+    商品コード
+    --
+}
+
+entity "商品" as product {
+    商品コード
+    --
+    商品名
+    商品分類コード(FK)
+}
+
+entity "商品分類" as product_category {
+    商品分類コード
+    --
+    分類名
+}
+
+office ||.|{ branch
+branch ||.|{ branch_product
+branch_product }|..|| product
+product }|.|| product_category
+
+@enduml
