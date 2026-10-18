@@ -1,0 +1,128 @@
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+
+body .part1 {
+  counter-reset: part 0;
+}
+
+body .part2 {
+  counter-reset: part 1;
+}
+
+body .part3 {
+  counter-reset: part 2;
+}
+
+body .part4 {
+  counter-reset: part 3;
+}
+
+body .chap1 {
+  counter-reset: chapter 0;
+}
+
+body .chap2 {
+  counter-reset: chapter 1;
+}
+
+body .chap3 {
+  counter-reset: chapter 2;
+}
+
+body .chap4 {
+  counter-reset: chapter 3;
+}
+
+body .chap5 {
+  counter-reset: chapter 4;
+}
+
+body .chap6 {
+  counter-reset: chapter 5;
+}
+
+body .chap7 {
+  counter-reset: chapter 6;
+}
+
+body .chap8 {
+  counter-reset: chapter 7;
+}
+
+body .chap9 {
+  counter-reset: chapter 8;
+}
+
+body .chap10 {
+  counter-reset: chapter 9;
+}
+
+body .chap11 {
+  counter-reset: chapter 10;
+}
+
+body .chap12 {
+  counter-reset: chapter 11;
+}
+
+body .chap13 {
+  counter-reset: chapter 12;
+}
+
+body .chap14 {
+  counter-reset: chapter 13;
+}
+
+body .chap15 {
+  counter-reset: chapter 14;
+}
+
+body .chap16 {
+  counter-reset: chapter 15;
+}
+
+body .chap17 {
+  counter-reset: chapter 16;
+}
+
+h1 {
+  counter-reset: chapter;
+}
+
+h2 {
+  counter-reset: section;
+}
+
+h3 {
+  counter-reset: sub-section;
+}
+
+h1::before {
+  counter-increment: part;
+  content: "Part" counter(part) " ";
+}
+
+h2::before {
+  counter-increment: chapter;
+  content: "Chapter" counter(chapter) " ";
+}
+
+h3::before {
+  counter-increment: section;
+  content: counter(chapter) "." counter(section) " ";
+}
+
+h4::before {
+  counter-increment: sub-section;
+  content: counter(chapter) "." counter(section) "." counter(sub-section) " ";
+}
+
+ol.brackets li {
+  font-family: 'Times New Roman', serif;
+  list-style-type: none;
+  counter-increment: cnt;
+}
+
+ol.brackets li:before {
+  content: "[ " counter(cnt) " ]　";
+}
