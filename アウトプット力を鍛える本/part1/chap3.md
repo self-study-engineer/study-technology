@@ -4,7 +4,15 @@
 
 ### 目立つ存在になる
 
-
+<div style="padding: 15px 15px 0px 15px; border: 2px solid; border-radius: 5px;">
+    この章で取り上げること
+    <br>
+    <ul>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+</div>
 
 ### 重要な特徴
 
