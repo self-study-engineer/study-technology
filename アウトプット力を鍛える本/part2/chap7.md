@@ -2,6 +2,17 @@
 
 ## 公開しよう
 
+<div style="padding: 15px 15px 0px 15px; border: 2px solid; border-radius: 5px;">
+    この章で取り上げること
+    <br>
+    <ul>
+        <li>公開前に最後に考えるべきこと</li>
+        <li>Webページとして公開する記事をレビューする際にチェックすべき項目</li>
+        <li>メタデータの設定ガイドライン</li>
+    </ul>
+</div>
+<br>
+
 ### 焦点と課題
 
 

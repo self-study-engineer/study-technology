@@ -2,6 +2,17 @@
 
 ## フィードバックをもらう
 
+<div style="padding: 15px 15px 0px 15px; border: 2px solid; border-radius: 5px;">
+    この章で取り上げること
+    <br>
+    <ul>
+        <li>コードレビューと記事レビューのプロセスの比較</li>
+        <li>誰にレビューしてもらうべきか、いつプロセスを開始するかについて</li>
+        <li>レビュアーの準備</li>
+    </ul>
+</div>
+<br>
+
 ### 重要な論点と課題
 
 
