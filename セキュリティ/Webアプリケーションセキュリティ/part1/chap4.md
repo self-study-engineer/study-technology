@@ -55,6 +55,8 @@
 
 </div>
 
+<div style="page-break-before: always;"></div>
+
 ## 出力のエスケープ
 
 ### HTTPレスポンスの出力エスケープ
@@ -69,6 +71,8 @@
 
 
 
+<div style="page-break-before: always;"></div>
+
 ## リソースの処理
 
 
@@ -76,6 +80,8 @@
 ## REST（Representational State Transfer）
 
 
+
+<div style="page-break-before: always;"></div>
 
 ## 多層防御
 
@@ -96,6 +102,8 @@
   - 制限付きの権限を持とう**アカウント**としてデータベースに接続する。
   - **データベース**への各呼び出しからの各応答が期待される形式であることを検証する。
   - **データベース**呼び出しのログを記録し、異常なアクティビティがないか監視する。
+
+<div style="page-break-before: always;"></div>
 
 ## <font color=red>最小特権の原則</font>
 

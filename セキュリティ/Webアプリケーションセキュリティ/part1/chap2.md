@@ -5,11 +5,11 @@
 <div style="padding: 15px 15px 0px 15px; border: 2px solid; border-radius: 5px;">
 この章では以下の項目について説明します。
 <ol>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
+    <li>Webブラウザがユーザーを保護する方法</li>
+    <li>Webアプリケーションがリソースを読み込む場所を制限するためのHTTPレスポンスヘッダーの設定方法</li>
+    <li>ブラウザによるネットワークおよびディスクアクセスの管理方法</li>
+    <li>ブラウザによるクッキーの保護方法</li>
+    <li>ブラウザが履歴情報を誤って漏洩してしまう可能性</li>
 </ol>
 </div>
 
@@ -17,20 +17,36 @@
 
 - 
 
+<div style="page-break-before: always;"></div>
+
 ## JavaScript サンドボックス
+
+<img src="images/2-1.png" width=85%>
+
+- ブラウザではWebページのHTMLの`<script>`タグによって読み込まれたJavaScriptコードは実行のためにJavaScriptエンジンに渡されます。
+- JavaScriptは通常、Webページを動的にするために使用され、ユーザーがページとやり取りするのを待ち、それに応じてページの一部を更新します。
+  - <font color=red>`<script>`タグに`defer`属性がある場合、ブラウザはDOMが確定するまでJavaScriptの実行を待ちます</font>が、そうでない場合は即座に実行されます。
+  - **インラインJavaScript**の場合はHTMLに直接記述されており、**外部読み込み**の場合は`src`属性で外部URLを指定します。
+- JavaScriptエンジンはコードに多くの制限を設けており、これらは**サンドボックス化**と呼ばれる。これにより、ホストシステムに大きなダメージを与えることなく実行できる環境を確保します。<u>具体的にはサンドボックス環境では以下の操作ができません</u>。
+  - ディスク上の任意のファイルアクセス
+  - 他のOSのプロセスへの干渉や通信
+  - OSのメモリの任意の場所を読み取る
+  - 任意のネットワークコール
+- 【<font color=red><b>ヒント</b></font>】ブラウザ上で実行されるJavaScriptの使用目的は一般的にかなり限定的であるため、このトピックでは<u>最初の重要なセキュリティ対策として、Webアプリケーション上のJavaScriptを可能な限り制限することを推奨します</u>。ハッカーはXSS、CSRF、SSRF、XSSIなどの攻撃により被害を引き起こすためリスク軽減のために推奨されます。
+- Webページ上のJavaScriptをロックダウンするにはいくつか主要な方法があります。その対策のために次の3つのチェックを行い、安全性を確保します。
 
 > ### JavaScriptコードに対する3つのチェック
 > 1. このページで実行できるJavaScriptコードは何か？
-> → コンテンツセキュリティポリシー（**CSP**）を設定する
+> → 【**回答**】コンテンツセキュリティポリシー（**CSP**）を設定する
 > 2. このページのJavaScriptにどのようなタスクを実行させるべきか
-> → **CSP**）を設定し、**同一オリジンポリシー**を制限する。異なるオリジンからの読み込みはクロスオリジンリソース共有（**CORS**））を設定する。
+> → 【**回答**】**CSP**を設定し、**同一オリジンポリシー**を制限する。異なるオリジンからの読み込みはクロスオリジンリソース共有（**CORS**）を設定する。
 > <font color=red>※ほとんどのシナリオではCORSヘッダーは何も設定しないことが最も安全なオプション</font>
 > 3. 正しいJavaScriptコードを実行しているとどのように確認できるか？
-> → 
-
-- 
+> → 【**回答**】サブリソース完全性（**SRI**：SubResource Integrity）を確保するために、`<script>`タグに`integrity`属性を付与し、実行されるJavaScriptファイル（コード）に対してハッシュ値を求める。
 
 ### コンテンツセキュリティポリシー
+
+- 
 
 【**JavaScript**】
 
@@ -38,8 +54,7 @@
 const express = require("express")
 const app = express()
 const port = 3000
-app.get("/", (req, res) => {
-    // レスポンスヘッダーとして直接設定
+app.get("/", (req, res) => { // レスポンスヘッダーとして直接設定
     res.set("Content-Security-Policy", "default-src 'self'") // CSP
     res.send("Web app secure!")
 })
@@ -58,8 +73,7 @@ app.listen(port, () => {
         <meta 
             http-equiv="Content-Security-Policy"
             content="default-src 'self'">
-        <meta charset="utf-8">
-        <title></title>
+        ...
     </head>
     <body>
         <p>Web app secure!</p>
@@ -76,17 +90,18 @@ app.listen(port, () => {
 - 【**`script-src 'self' *.googleapis.com; img-src *`**】JavaScriptファイルはgoogleapis.comまたはそのサブドメインから読み込むことができます。<font color=red>画像はどこからでも読み込むことができます</font>。
 - 【**`defalut-src 'https: 'unsafe-inline';`**】すべてのリソースはHTTPS経由で読み込まなければなりません。<font color=red>インラインJavaScript（HTMLファイルの中に直接JavaScriptのコードを書き込むこと）は許可されています</font>。
 - 【**`defalut-src https: 'unsafe-eval' 'unsafe-inline'`**】すべてのリソースはHTTPS経由で読み込まなければなりません。インラインJavaScriptは許可されています。`eval(...)`関数を使用して文字列をコードとして評価するJavaScriptも許可されています。
-- 
 
 ### 同一オリジンポリシー
 
 - 例えば、次のオリジンが`https://www.example.com`と同じオリジンかどうかを考える
-  - 【`https://www.example.com/profile`】はい。パスが異なっていますが、<font color=red>①プロトコル、②ドメイン、③ポート</font>が一致しています。
+  - 【`https://www.example.com/profile`】はい。パスが異なっていますが、<font color=red>オリジン（①プロトコル、②ドメイン、③ポート）</font>が一致しています。
   - 【`http://www.example.com`】いいえ。**プロトコル（http）** が異なります。
   - 【`https://www.example.org`】いいえ。**ドメイン（org）** が異なります。
   - 【`https://www.example.com:8080`】いいえ。**ポート（8080）** が異なります。
   - 【`https://blog.example.com`】いいえ。**サブドメイン（blog）** が異なります。
 - 
+
+<div style="page-break-before: always;"></div>
 
 ### クロスオリジンリクエスト
 
@@ -185,9 +200,13 @@ header("Content-Type: application/json; charset=utf-8");
 echo json_encode(["message" => "ok"]);
 ```
 
+<div style="page-break-before: always;"></div>
+
 ### サブリソースの安全性チェック
 
 - 
+
+<div style="page-break-before: always;"></div>
 
 ## ディスクへのアクセス
 
@@ -204,6 +223,8 @@ echo json_encode(["message" => "ok"]);
 ### Indexed DB
 
 - 
+
+<div style="page-break-before: always;"></div>
 
 ## クッキー（Cookie）
 
@@ -228,6 +249,8 @@ echo json_encode(["message" => "ok"]);
 ### クッキーの無効化
 
 - 
+
+<div style="page-break-before: always;"></div>
 
 ## クロスサイトトラッキング
 
