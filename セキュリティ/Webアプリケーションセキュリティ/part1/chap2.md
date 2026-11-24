@@ -32,7 +32,7 @@
   - 他のOSのプロセスへの干渉や通信
   - OSのメモリの任意の場所を読み取る
   - 任意のネットワークコール
-- 【<font color=red><b>ヒント</b></font>】ブラウザ上で実行されるJavaScriptの使用目的は一般的にかなり限定的であるため、このトピックでは<u>最初の重要なセキュリティ対策として、Webアプリケーション上のJavaScriptを可能な限り制限することを推奨します</u>。ハッカーはXSS、CSRF、SSRF、XSSIなどの攻撃により被害を引き起こすためリスク軽減のために推奨されます。
+- 【<b>ヒント</b>】ブラウザ上で実行されるJavaScriptの使用目的は一般的にかなり限定的であるため、このトピックでは<u>最初の重要なセキュリティ対策として、Webアプリケーション上のJavaScriptを可能な限り制限することを推奨します</u>。ハッカーはXSS、CSRF、SSRF、XSSIなどの攻撃により被害を引き起こすためリスク軽減のために推奨されます。
 - Webページ上のJavaScriptをロックダウンするにはいくつか主要な方法があります。その対策のために次の3つのチェックを行い、安全性を確保します。
 
 > ### JavaScriptコードに対する3つのチェック
@@ -106,27 +106,13 @@ app.listen(port, () => {
 ### クロスオリジンリクエスト
 
 - ブラウザでは、他のWebサイトへのリンクをクリックしてブラウザがそのサイトを開く際に発生する**クロスオリジン書き込みは許可されています**。
-- クロスオリジン埋め込み（画像のインポート）はWebサイトのCSPが許可している限り許可されます。
-- **クロスオリジン読み込みは事前にブラウザに明示的に指示しない限り許可されません**。この設定はクロスオリジンリソース共有（CORS）設定と呼ばれ、設定箇所としては次の3つが考えられる。
-  1. 【**バックエンドコード**】最も一般的な設定箇所。Express、FastAPI、Spring などで使用し、許可するオリジンが複数あるときは許可リストと照合します。`Access-Control-Allow-Credentials: true`（Cookie認証など）と組み合わせると * が使えず、オリジンを明示する必要があります。許可リストを環境変数などで環境ごとに切り替えられます。
+- クロスオリジン埋め込み（画像インポート）はブラウザのCSPが許可すれば、使用できます。
+- **クロスオリジン読み込みは事前にブラウザに明示的に指示しない限り許可されません**。この設定はクロスオリジンリソース共有（CORS）設定と呼ばれ、次の3つが考えられます。
+  1. 【**バックエンドコード**】最も一般的な設定箇所。Express、FastAPI、Spring などで使用し、許可するオリジンが複数あるときは許可リストと照合します。`Access-Control-Allow-Credentials: true`と組み合わせると`＊`が使えず、オリジンを明示する必要があります。許可リストを環境変数などで環境ごとに切り替えられます。
   2. 【**Webサーバー／リバースプロキシ（Nginx, Apacheなど）**】静的ファイル（フォント、画像、JSONなど）を直接配信する場合に使います。アプリ側に手を入れられない、または複数のアプリの前段でまとめて制御したい場合にも使います。<font color=red>単一オリジンを固定で返すだけなら簡単ですが複数オリジンの出し分けは map などが必要になり、少し面倒</font>。
-  3. 【**クラウドのマネージド設定**】サーバーレスやマネージドサービス中心の構成では、ここで設定するのが自然。`S3`の場合、バケットのCORS設定があり、静的ホスティングやブラウザから直接アップロードするときは、実質これしか選択肢がありません。`API Gateway`の場合、HTTP API には組み込みのCORS設定があります。REST API はプロキシ統合だとLambda側でヘッダーを返す必要があり、ハマりやすいポイントです。`CloudFront`の場合、Response Headers Policy で付与します。オリジンが返したヘッダーを上書きするかどうかの設定もあります。
+  3. 【**クラウドの設定**】サーバーレスやマネージドサービス中心の構成では、ここで設定するのが自然。`S3`の場合、バケットのCORS設定があり、静的ホスティングやブラウザから直接アップロードするときに使います。`API Gateway`の場合、HTTP API には組み込みのCORS設定があります。REST API はプロキシ統合だとLambda側でヘッダーを返す必要があり、ハマりやすいポイントです。`CloudFront`の場合、`Response Headers Policy`で付与します。
 
 #### 色々なCORS設定
-
-【**Sprint Boot（Java）**】
-
-```java
-@RestController
-@RequestMapping("/api/items")
-@CrossOrigin(origins = "http://localhost:3000")
-public class ItemController {
-    @GetMapping
-    public List<String> list() {
-        return List.of("item1", "item2");
-    }
-}
-```
 
 【**Express（JavaScript）**】
 
@@ -142,11 +128,7 @@ app.use(cors({
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
-
-app.get("/api/data", (req, res) => {
-  res.json({ message: "ok" });
-});
-
+app.get("/api/data", (req, res) => { res.json({ message: "ok" }); });
 app.listen(3000);
 ```
 
@@ -172,6 +154,20 @@ def read_data():
     return {"message": "ok"}
 ```
 
+【**Sprint Boot（Java）**】
+
+```java
+@RestController
+@RequestMapping("/api/items")
+@CrossOrigin(origins = "http://localhost:3000")
+public class ItemController {
+    @GetMapping
+    public List<String> list() {
+        return List.of("item1", "item2");
+    }
+}
+```
+
 【**PHP**】
 
 ```php
@@ -187,7 +183,6 @@ if (in_array($origin, $allowed_origins, true)) {
     header("Access-Control-Allow-Credentials: true");
     header("Vary: Origin");
 }
-
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
@@ -204,17 +199,73 @@ echo json_encode(["message" => "ok"]);
 
 ### サブリソースの安全性チェック
 
-- 
+- 攻撃者がWebサーバにコマンドラインアクセスし、直接既存のJavaScriptコードを編集することを考えます。例えば、**CDN**（コンテンツ配信ネットワーク）にホストされている場合、攻撃者はそれらのシステムを侵害し、悪意のあるスクリプトを置き換えることができます。
+- これらの脅威から保護するためにWebページの`<script>`タグにサブリソースの完全性チェックを使用することができます。
+    ```html
+    <!-- コード例 -->
+    <script 
+        src="/js/application.js"
+        integrity="sha384-503lno38vOKjoSa8HT863w10M7hKzvj+HjknFmPkOJz50htAHuPtPLj6J6lfziE"
+    ></script>
+    ```
+- 実際にハッシュ値を計算する方法としては次の3つがある。
+  - **①コマンドで自分で計算する**：例えば以下の実行コマンドの場合、出力された文字列の先頭に sha384- を付けたものが値になります。
+    ```bash
+    openssl dgst -sha384 -binary lib.js | openssl base64 -A
+    ```
+  - **②CDNが公開している値を使う**：cdnjsやjsDelivrなどは、ライブラリごとにintegrity付きのscriptタグを用意しています。
+  - **③ビルドツールで自動付与する**：webpackやViteのSRIプラグインを使うと、ビルドのたびに自動で付与されます。ファイルを更新するとハッシュも変わるので、<font color=red><b>実運用ではこの方法が確実</b></font>です。
+- 【<b>ヒント</b>】SRIチェックはオプションですが、中間者攻撃（MITM）や悪意ある変種から保護する優れた方法であるため、可能な場合は常に使用するべき。
+ 
 
 <div style="page-break-before: always;"></div>
 
 ## ディスクへのアクセス
 
-- 
+- 先ほど、ブラウザ上で実行されるJavaScriptはディスク上の任意の場所にアクセスできないと述べました。しかし実際には、厳密に制御された方法でのみアクセスできます。
+- ブラウザがどのようにしてこのアクセスを許可しているのかを見てみましょう。
 
 ### ファイルAPI
 
-- 
+- ブラウザ上で実行されるJavaScriptがディスクにアクセスする最も明白な方法は**ファイルAPI**を使用することです。`<input type="file">`を用いてファイル選択ダイアログを開いたり、`DataTransfer`オブジェクトを使用してユーザーがファイルをドラッグできる領域を提供したりすることができます。
+
+**【例】コード**
+
+```javascript
+// #####################################################
+// ##### ファイル入力→入力したファイル情報をコンソール出力 #####
+// #####################################################
+const fileInput = document.querySelector("input[type=file]") // HTML文書内のファイル入力タグを見つけます。
+fileInput.addEventListener("change", () => {
+    // ユーザーがアップロードするファイルを選択すると、以下の処理が実行されます。
+    const [file] = fileInput.files
+    const reader = new FileReader()
+    reader.addEventListener("load", () => {
+        // コンソールにJavaScriptエンジンがファイルにアクセスできるようになったことを示します。
+        console.log(reader.result)
+    })
+    reader.readAsText(file)
+})
+
+// ################################
+// ##### ファイルのメタデータ取得 #####
+// ################################
+const fileInput = document.querySelector("input[type=file]") // HTML文書内のファイル入力タグを見つけます。
+fileInput.addEventListener("change", () => {
+    const [file] = fileInput.files
+    console.log("MIME type: " + file.type)
+    console.log("File size: " + file.size)
+    console.log("Modified: " + file.lastModifiedDate)
+})
+```
+
+| プロパティ              | 内容                                       | 例                                               |
+| ----------------------- | ------------------------------------------ | ------------------------------------------------ |
+| `file.type`             | ファイルの種類を表すMIMEタイプ（文字列）   | `text/plain`、`image/png`、`application/pdf`     |
+| `file.size`             | ファイルの大きさ（**バイト**単位の数値）   | `2048`（＝2KB）                                  |
+| `file.lastModifiedDate` | ファイルの最終更新日時（Dateオブジェクト） | `Tue Nov 24 2026 23:50:00 GMT+0900 (日本標準時)` |
+
+- 上記例のように、ユーザは意図的にファイルの共有を選択しており、またファイルAPIではファイル自体の操作は許可されていません。この制限により、悪意のあるJavaScriptがディスク上のファイルにウイルスを注入するといったことが防止され、特にJavaScriptコードに対してファイルがどのディレクトリ（フォルダ）から読み込まれたのかを**知らせません**。
 
 ### WebStorage
 
